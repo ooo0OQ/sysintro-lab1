@@ -26,7 +26,7 @@ knm: $(M)
 
 baseline: mnk
 
-tasks1:COMPUTE_ROW_MAJOR_MNK_LU2
+tasks1:
 	@echo Task 1
 	@$(MAKE) mnk
 	@$(MAKE) mkn

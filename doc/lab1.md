@@ -238,10 +238,10 @@ After implementing one permutation, suppose it is `mkn`, you can try `make mkn` 
 After implementing all these permutations, you should run the following command to collect the data and draw a speedup figure similar to the following one.
 
 ```bash
-$ make task1 I=1
-$ make task1 I=2
-$ make task1 I=3
-$ make task1 I=4
+$ make tasks1 I=1
+$ make tasks1 I=2
+$ make tasks1 I=3
+$ make tasks1 I=4
 ```
 
 ![](img/lab1-task1.png)

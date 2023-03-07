@@ -145,7 +145,27 @@ However, branch instructions can be just a minor part of the whole execution. Ac
 
 Since loop unrolling is such a common pattern in many workloads, instead of using multiple instructions, modern CPUs have offered us SIMD instructions. This not only reduces the code size, but also gives the potential of massive speedup because there can be dedicated accelerator units inside the CPU.
 
-ARM, i.e., the ISA of your RPi, has offered us such a SIMD feature called NEON. You may refer to [the manual of gcc](https://gcc.gnu.org/onlinedocs/gcc-4.6.4/gcc/ARM-NEON-Intrinsics.html) and [examples of ARM](https://developer.arm.com/documentation/102467/0100/Matrix-multiplication-example). 
+<!-- add some more SIMD introduction -->
+SIMD (**S**ingle **I**nstruction **M**ultiple **D**ata) is a data level parallelism technique, it performs the same instruction on more than one data units simultaneously. ARM, i.e., the ISA of your RPi, has offered us a C language extension [(NEON)](https://gcc.gnu.org/onlinedocs/gcc-4.6.4/gcc/ARM-NEON-Intrinsics.html) to write SIMD functions. Briefly speaking, NEON provides more long registers (e.g., 64bits D-type register or 128bits Q-type register) with new function interfaces for us to execute the same instruction on multiple data units (e.g., 16 and 32bit integers). In another word, NEON organize multiple same-type data units as a vector which stores in the NEON register.
+
+In NEON, such vector data types are named as ```<type><size>x<number_of_lanes>_t```. For example, ```uint8x8_t``` is a vector with eight ```uint8``` integers. More vector types can be seen in [page](https://developer.arm.com/documentation/den0018/a/NEON-Intrinsics/Vector-data-types-for-NEON-intrinsics). 
+
+Then we can execute instruction on a vector of data units simultaneously. For example, we can execute multiplication on eight 8bit ```uint8``` integers through ```uint8x8_t vmul_u8(uint8x8_t a, uint8x8_t b);```, for more examples, see [page](https://developer.arm.com/documentation/den0018/a/NEON-Intrinsics/Using-NEON-intrinsics).
+
+With SIMD, we can implement our task more efficiently, as we can now evaluate multiple independent multiplications at the same time.
+
+Actually, ARM also provides a compile option `-O3` that can automatically optimize your code with SIMD even if you didn't use the above SIMD instructions. For details, see [page](https://developer.arm.com/documentation/den0013/d/Optimizing-Code-to-Run-on-ARM-Processors/Compiler-optimizations/GCC-optimization-options).
+
+<!-- [ARM also provides](https://developer.arm.com/documentation/den0013/d/Optimizing-Code-to-Run-on-ARM-rocessors/Compiler-optimizations/GCC-optimization-options) that when you use `-O3`, the compiler would try to automatically optimize the code using SIMD. -->
+<!-- Actually, ARM also  -->
+
+<!-- For example, a 64bit NEON register can be viewed as storing eight 8bit unsigned integers to a single register ```uint_8x8_t x``` through ```uint_8x8_t x = vld1_u8(X8[i])```; or four 16bit unsigned integers through ```unit_16x4_t x = vld1_u8(X16[i])```, where ```X8``` or ```X16``` is a matrix of ```uint8_t``` or ```uint16_t```. Then we can simultaneously execute one single multiplication on the 8 or 4 integers through ```vmul_u8(uint_8x8_t x, uint_8x8_t x)``` or ```vmul_u16(unit_16x4_t x, unit_16x4_t x)```.  -->
+
+<!-- such a SIMD  -->
+<!-- feature called NEON.  -->
+
+
+<!-- You may refer to [the manual of gcc](https://gcc.gnu.org/onlinedocs/gcc-4.6.4/gcc/ARM-NEON-Intrinsics.html) and [examples of ARM](https://developer.arm.com/documentation/102467/0100/Matrix-multiplication-example).  -->
 
 ## Tasks
 
@@ -278,15 +298,18 @@ We will grade your submission with a linear scoring function. Namely, if you ach
 
 This task consists of two parts.
 
-The first part is similar to the second part. You can now use SIMD instructions. This time the required minimum speedup is 10X against the baseline `mnk`. You should change the line `grade3: simd` to your own implementation (You should not submit the one with `-O3`!). The grading policy is again linear.
+The first part is similar to the second task. You should 1) use the SIMD instructions provided by NEON and 2) use the ARM automated compiling option `-O3` to improve the performance of your code. This time the required minimum speedup is 10X against the baseline `mnk`.
 
+<!-- You can now use SIMD instructions (through NEON) and compare the performance with the ARM automatic compiled one. This time the required minimum speedup is 10X against the baseline `mnk`. You should change the line `grade3: simd` to your own implementation (You should not submit the one with `-O3`!). The grading policy is again linear. -->
+
+<!-- The second part again is drawing a speedup figure. -->
+
+<!-- [ARM said](https://developer.arm.com/documentation/den0013/d/Optimizing-Code-to-Run-on-ARM-Processors/Compiler-optimizations/GCC-optimization-options) that when you use `-O3`, the compiler would try to automatically optimize the code using SIMD. We will see how this affects performance. -->
 The second part again is drawing a speedup figure.
+You should draw a figure containing all four cases: 1) `mnk`, 2) `mnk` with `-O3`, 3) your `simd` implementation, and 4) your `simd` implementation with `-O3`. If the speedup is too large, you can use log scale in y-axis. This figure does not have the 10X requirement.
 
-[ARM said](https://developer.arm.com/documentation/den0013/d/Optimizing-Code-to-Run-on-ARM-Processors/Compiler-optimizations/GCC-optimization-options) that when you use `-O3`, the compiler would try to automatically optimize the code using SIMD. We will see how this affects performance.
 
-You should draw a figure containing all four cases: `mnk`, `mnk` with `-O3`, your `simd` implementation, and your `simd` implementation with `-O3`. If the speedup is too large, you can use log scale in y-axis. This figure does not have the 10X requirement.
-
-### Git (optional in this lab but highly recommended)
+## Git (optional in this lab but highly recommended)
 
 Instead of sending the code to your teammate again and again using IMs like Wechat and QQ, you should use a version control system. You can use `git` as the version control tool and <https://git.tsinghua.edu.cn> as your platform to collaborate with your teammate.
 

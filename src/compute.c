@@ -29,31 +29,87 @@ void compute_row_major_mnk() {
 }
 
 void compute_row_major_mkn() {
+	zero_z();
+	for(int i=0;i!=m;++i){
+		for(int l=0;l!=k;++l){
+			for(int j=0;j!=n;++j){
+				Z[i][j]+=X[i][l]*Y[l][j];
+			}
+		}
+	}
     // TODO: task 1
 }
 
 void compute_row_major_kmn() {
-    // TODO: task 1
+    zero_z();
+	for(int l=0;l!=k;++l){
+		for(int i=0;i!=m;++i){
+			for(int j=0;j!=n;++j){
+				Z[i][j]+=X[i][l]*Y[l][j];
+			}
+		}
+	}
 }
 
 void compute_row_major_nmk() {
-    // TODO: task 1
+    zero_z();
+	for(int j=0;j!=n;++j){
+		for(int i=0;i!=m;++i){
+			for(int l=0;l!=k;++l){
+				Z[i][j]+=X[i][l]*Y[l][j];
+			}
+		}
+	}
 }
 
 void compute_row_major_nkm() {
-    // TODO: task 1
+	zero_z();
+    for(int j=0;j!=n;++j){
+		for(int l=0;l!=k;++l){
+			for(int i=0;i!=m;++i){
+				Z[i][j]+=X[i][l]*Y[l][j];
+			}
+		}
+	}
 }
 
 void compute_row_major_knm() {
-    // TODO: task 1
+    zero_z();
+    for(int l=0;l!=k;++l){
+		for(int j=0;j!=n;++j){
+			for(int i=0;i!=m;++i){
+				Z[i][j]+=X[i][l]*Y[l][j];
+			}
+		}
+	}
 }
 
 void compute_y_transpose_mnk() {
-    // TODO: task 2
+    zero_z();
+    for (int i = 0; i != m; ++i) {
+        for (int j = 0; j != n; ++j) {
+            for (int l = 0; l != k; ++l) {
+                Z[i][j] += X[i][l] * YP[j][l];
+            }
+        }
+    }
 }
 
 void compute_row_major_mnkkmn_b32() {
-    // TODO: task 2
+    zero_z();
+    for (int i1 = 0; i1 != m/32; ++i1) {
+        for (int j1 = 0; j1 != n/32; ++j1) {
+            for (int l1 = 0; l1 != k/32; ++l1) {
+    			for (int i2 = 0; i2 != 32; ++i2) {
+        			for (int j2 = 0; j2 != 32; ++j2) {
+            			for (int l2 = 0; l2 != 32; ++l2) {
+                			Z[i1*32+i2][j1*32+j2] += X[i1*32+i2][l1*32+l2] * Y[l1*32+l2][j1*32+j2];
+            			}
+        			}
+    			}
+            }
+        }
+    }
 }
 
 void compute_row_major_mnk_lu2() {

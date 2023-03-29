@@ -94,15 +94,18 @@ void compute_y_transpose_mnk() {
         }
     }
 }
-
+int min(int a,int b){return (a<b)?a:b;}
 void compute_row_major_mnkkmn_b32() {
     zero_z();
-    for (int i1 = 0; i1 != m/32; ++i1) {
-        for (int j1 = 0; j1 != n/32; ++j1) {
-            for (int l1 = 0; l1 != k/32; ++l1) {
-    			for (int i2 = 0; i2 != 32; ++i2) {
-        			for (int j2 = 0; j2 != 32; ++j2) {
-            			for (int l2 = 0; l2 != 32; ++l2) {
+    for (int i1 = 0; i1 != (m-1)/32+1; ++i1) {
+		int im=min(m-i1*32,32);
+        for (int j1 = 0; j1 != (n-1)/32+1; ++j1) {
+			int in=min(n-j1*32,32);
+            for (int l1 = 0; l1 != (k-1)/32+1; ++l1) {
+				int ik=min(k-l1*32,32);
+    			for (int l2 = 0; l2 != ik; ++l2) {
+        			for (int i2 = 0; i2 != im; ++i2) {
+            			for (int j2 = 0; j2 != in; ++j2) {
                 			Z[i1*32+i2][j1*32+j2] += X[i1*32+i2][l1*32+l2] * Y[l1*32+l2][j1*32+j2];
             			}
         			}
@@ -113,7 +116,29 @@ void compute_row_major_mnkkmn_b32() {
 }
 
 void compute_row_major_mnk_lu2() {
-    // TODO: task 2
+    zero_z();
+	for (int i = 0; i != m; ++i) {
+        for (int j = 0; j != n; ++j) {
+            for (int l = 0; l != k; l+=2) {
+                Z[i][j] += X[i][l] * Y[l][j];
+				Z[i][j]+=X[i][l+1]*Y[l+1][j];
+            }
+        }
+    }
+}
+
+void fancy_kernel_after_ten_hours_of_tuning(){
+	zero_z();
+    for (int i = 0; i != m; ++i) {
+        for (int j = 0; j != n; ++j) {
+            for (int l = 0; l != k; l+=4) {
+                Z[i][j] += X[i][l] * YP[j][l];
+				Z[i][j] += X[i][l+1]*YP[j][l+1];
+				Z[i][j]+=X[i][l+2]*YP[j][l+2];
+				Z[i][j]+=X[i][l+3]*YP[j][l+3];
+            }
+        }
+	}
 }
 
 void compute_simd() {
@@ -180,6 +205,9 @@ uint64_t compute() {
             //printf("COMPUTE_SIMD\n");
             compute_simd();
             break;
+		case COMPUTE_SB:
+			fancy_kernel_after_ten_hours_of_tuning();
+			break;
         default:
             printf("Unreachable!");
             return 0;
